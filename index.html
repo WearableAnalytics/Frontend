@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management Portal</title>
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Patient Management Portal</h1>
+            <p>Manage patient registration and onboarding</p>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-buttons">
+            <div class="menu-btn" onclick="showSection('registerSection')">
+                <h2>Register New Patient</h2>
+                <p>Create a new patient registration</p>
+            </div>
+            <div class="menu-btn" onclick="showSection('onboardSection')">
+                <h2>Onboard Patient</h2>
+                <p>Complete patient onboarding with token</p>
+            </div>
+            <div class="menu-btn" onclick="openDashboard()">
+                <h2>View Dashboard</h2>
+                <p>Access Grafana analytics</p>
+            </div>
+        </div>
+
+        <!-- Register Patient Section -->
+        <div id="registerSection" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+            <h2 style="margin-bottom: 30px; color: #333;">Register New Patient</h2>
+
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="patient_id">Patient ID:</label>
+                    <input type="text" id="patient_id" name="patient_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="context_id">Context ID:</label>
+                    <input type="text" id="context_id" name="context_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="watch_id">Watch ID:</label>
+                    <input type="text" id="watch_id" name="watch_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone_id">Phone ID:</label>
+                    <input type="text" id="phone_id" name="phone_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="patient_mail">Patient Email:</label>
+                    <input type="email" id="patient_mail" name="patient_mail" required>
+                </div>
+
+                <!-- Appointment Date/Time -->
+                <div class="form-group">
+                    <label for="appointment_date">Appointment Date:</label>
+                    <input type="date" id="appointment_date" name="appointment_date" required>
+                    <p class="helper-text">Date of the registration appointment</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="appointment_time">Appointment Time:</label>
+                    <input type="time" id="appointment_time" name="appointment_time" value="00:00" required>
+                    <p class="helper-text">Time of the registration appointment</p>
+                </div>
+
+                <!-- Event Start Time -->
+                <div class="form-group">
+                    <label for="event_start_date">Event Start Date:</label>
+                    <input type="date" id="event_start_date" name="event_start_date" required>
+                    <p class="helper-text">Select the date when the event/monitoring starts</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="event_start_time">Event Start Time:</label>
+                    <input type="time" id="event_start_time" name="event_start_time" value="00:00" required>
+                    <p class="helper-text">Default is midnight (00:00:00), or enter a custom time</p>
+                </div>
+
+                <!-- Duration/End Time Toggle -->
+                <div class="form-group">
+                    <label>Event Duration/End Time:</label>
+                    <div class="duration-toggle">
+                        <label>
+                            <input type="radio" name="duration_type" value="duration" checked
+                                   onchange="toggleDurationInput()">
+                            Specify Duration
+                        </label>
+                        <label>
+                            <input type="radio" name="duration_type" value="end_time" onchange="toggleDurationInput()">
+                            Specify End Time
+                        </label>
+                    </div>
+
+                    <!-- Duration Input -->
+                    <div id="durationInput" class="duration-input-container active">
+                        <div class="duration-fields">
+                            <div class="duration-field">
+                                <label>Days</label>
+                                <input type="number" id="duration_days" min="0" value="0">
+                            </div>
+                            <div class="duration-field">
+                                <label>Hours</label>
+                                <input type="number" id="duration_hours" min="0" max="23" value="0">
+                            </div>
+                            <div class="duration-field">
+                                <label>Minutes</label>
+                                <input type="number" id="duration_minutes" min="0" max="59" value="0">
+                            </div>
+                            <div class="duration-field">
+                                <label>Seconds</label>
+                                <input type="number" id="duration_seconds" min="0" max="59" value="0">
+                            </div>
+                        </div>
+                        <p class="helper-text">Enter the duration of the event</p>
+                    </div>
+
+                    <!-- End Time Input -->
+                    <div id="endTimeInput" class="duration-input-container">
+                        <div class="time-input-group">
+                            <div>
+                                <label for="event_end_date">End Date:</label>
+                                <input type="date" id="event_end_date" name="event_end_date">
+                            </div>
+                            <div>
+                                <label for="event_end_time">End Time:</label>
+                                <input type="time" id="event_end_time" name="event_end_time" value="00:00">
+                            </div>
+                        </div>
+                        <p class="helper-text">Select when the event ends</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Registration</button>
+            </form>
+            <div id="registerResponse" class="response"></div>
+        </div>
+
+        <!-- Onboard Patient Section -->
+        <div id="onboardSection" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+            <h2 style="margin-bottom: 30px; color: #333;">Onboard Patient</h2>
+
+            <form id="onboardForm">
+                <div class="form-group">
+                    <label for="registration_token">Registration Token (UUID):</label>
+                    <input type="text" id="registration_token" name="registration_token"
+                           placeholder="e.g., 550e8400-e29b-41d4-a716-446655440000" required>
+                </div>
+                <button type="submit" class="submit-btn">Generate Event ID</button>
+            </form>
+            <div id="onboardResponse" class="response"></div>
+
+            <div id="qrContainer" class="qr-container" style="display: none;">
+                <h3>Scan this QR Code</h3>
+                <div id="qrcode"></div>
+                <div class="event-id-display">
+                    <strong>Event ID:</strong> <span id="eventIdDisplay"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="src/app.js"></script>
+</body>
+</html>
